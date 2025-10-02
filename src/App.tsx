@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Eye, Code, Mail } from 'lucide-react';
-import ejs from 'ejs';
+import { useState, useEffect } from "react";
+import { Eye, Code, Mail } from "lucide-react";
+import ejs from "ejs";
 
 const defaultBody = `<%- include('./components/header', {
   title: 'Welcome Email',
@@ -26,23 +26,23 @@ const defaultData = `{
 }`;
 
 function App() {
-  const [headerTemplate, setHeaderTemplate] = useState('');
+  const [headerTemplate, setHeaderTemplate] = useState("");
   const [bodyTemplate, setBodyTemplate] = useState(defaultBody);
-  const [footerTemplate, setFooterTemplate] = useState('');
+  const [footerTemplate, setFooterTemplate] = useState("");
   const [data, setData] = useState(defaultData);
-  const [rendered, setRendered] = useState('');
-  const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState<'preview' | 'html'>('preview');
+  const [rendered, setRendered] = useState("");
+  const [error, setError] = useState("");
+  const [activeTab, setActiveTab] = useState<"preview" | "html">("preview");
 
   useEffect(() => {
-    fetch('/components/header.ejs')
-      .then(res => res.text())
-      .then(text => setHeaderTemplate(text))
+    fetch("/components/header.ejs")
+      .then((res) => res.text())
+      .then((text) => setHeaderTemplate(text))
       .catch(() => {});
 
-    fetch('/components/footer.ejs')
-      .then(res => res.text())
-      .then(text => setFooterTemplate(text))
+    fetch("/components/footer.ejs")
+      .then((res) => res.text())
+      .then((text) => setFooterTemplate(text))
       .catch(() => {});
   }, []);
 
@@ -52,25 +52,30 @@ function App() {
 
       let processedTemplate = bodyTemplate;
 
-      const headerIncludeRegex = /<%[-=]\s*include\(['"]\.\/components\/header['"],?\s*(\{[^}]*\})?\s*\)\s*%>/g;
-      processedTemplate = processedTemplate.replace(headerIncludeRegex, (match, params) => {
-        if (params) {
+      const headerIncludeRegex =
+        /<%[-=]\s*include\(['"]\.\/components\/header['"],?\s*(\{[^}]*\})?\s*\)\s*%>/g;
+      processedTemplate = processedTemplate.replace(
+        headerIncludeRegex,
+        (match, params) => {
+          if (params) {
+            return headerTemplate;
+          }
           return headerTemplate;
         }
-        return headerTemplate;
-      });
+      );
 
-      const footerIncludeRegex = /<%[-=]\s*include\(['"]\.\/components\/footer['"],?\s*(\{[^}]*\})?\s*\)\s*%>/g;
+      const footerIncludeRegex =
+        /<%[-=]\s*include\(['"]\.\/components\/footer['"],?\s*(\{[^}]*\})?\s*\)\s*%>/g;
       processedTemplate = processedTemplate.replace(footerIncludeRegex, () => {
         return footerTemplate;
       });
 
       const result = ejs.render(processedTemplate, parsedData);
       setRendered(result);
-      setError('');
+      setError("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      setRendered('');
+      setError(err instanceof Error ? err.message : "An error occurred");
+      setRendered("");
     }
   };
 
@@ -80,9 +85,13 @@ function App() {
         <div className="mb-8 text-center">
           <div className="flex items-center justify-center gap-3 mb-2">
             <Mail className="w-8 h-8 text-blue-600" />
-            <h1 className="text-4xl font-bold text-slate-800">EJS Email Template Viewer</h1>
+            <h1 className="text-4xl font-bold text-slate-800">
+              EJS Email Template Viewer
+            </h1>
           </div>
-          <p className="text-slate-600">Create and preview email templates with live rendering</p>
+          <p className="text-slate-600">
+            Create and preview email templates with live rendering
+          </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
@@ -101,9 +110,34 @@ function App() {
             </div>
 
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="bg-slate-800 px-4 py-3 flex items-center gap-2">
-                <Code className="w-5 h-5 text-slate-300" />
-                <h2 className="text-white font-semibold">Body Template</h2>
+              <div className="bg-slate-800 px-4 py-3 flex items-center gap-2 justify-between">
+                <div className="flex items-center gap-2">
+                  <Code className="w-5 h-5 text-slate-300" />
+                  <h2 className="text-white font-semibold">Body Template</h2>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() =>
+                      setBodyTemplate(
+                        `<%- include('./components/header', { title: 'Welcome Email', companyName: companyName }) %>\n` +
+                          bodyTemplate
+                      )
+                    }
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-1 px-2 rounded"
+                  >
+                    Auto Add Header
+                  </button>
+                  <button
+                    onClick={() =>
+                      setBodyTemplate(
+                        bodyTemplate + `\n<%- include('./components/footer') %>`
+                      )
+                    }
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-1 px-2 rounded"
+                  >
+                    Auto Add Footer
+                  </button>
+                </div>
               </div>
               <textarea
                 value={bodyTemplate}
@@ -129,7 +163,9 @@ function App() {
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="bg-slate-800 px-4 py-3 flex items-center gap-2">
                 <Code className="w-5 h-5 text-slate-300" />
-                <h2 className="text-white font-semibold">Template Data (JSON)</h2>
+                <h2 className="text-white font-semibold">
+                  Template Data (JSON)
+                </h2>
               </div>
               <textarea
                 value={data}
@@ -154,28 +190,31 @@ function App() {
                 <h2 className="text-white font-semibold">Preview</h2>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setActiveTab('preview')}
+                    onClick={() => setActiveTab("preview")}
                     className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                      activeTab === 'preview'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      activeTab === "preview"
+                        ? "bg-blue-600 text-white"
+                        : "bg-slate-700 text-slate-300 hover:bg-slate-600"
                     }`}
                   >
                     Preview
                   </button>
                   <button
-                    onClick={() => setActiveTab('html')}
+                    onClick={() => setActiveTab("html")}
                     className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                      activeTab === 'html'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      activeTab === "html"
+                        ? "bg-blue-600 text-white"
+                        : "bg-slate-700 text-slate-300 hover:bg-slate-600"
                     }`}
                   >
                     HTML
                   </button>
                 </div>
               </div>
-              <div className="h-[600px] overflow-auto">
+              <div
+                className="h-[600px] overflow-auto resize-y"
+                style={{ resize: "vertical" }}
+              >
                 {error ? (
                   <div className="p-4">
                     <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -184,7 +223,7 @@ function App() {
                     </div>
                   </div>
                 ) : rendered ? (
-                  activeTab === 'preview' ? (
+                  activeTab === "preview" ? (
                     <iframe
                       srcDoc={rendered}
                       className="w-full h-full border-0"
