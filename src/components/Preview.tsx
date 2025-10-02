@@ -41,10 +41,7 @@ export default function Preview({
             </button>
           </div>
         </div>
-        <div
-          className="h-[calc(100vh-190px)] overflow-auto resize-y"
-          style={{ resize: "vertical" }}
-        >
+        <div className="h-[calc(100vh-190px)] overflow-auto">
           {error ? (
             <div className="p-4">
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">

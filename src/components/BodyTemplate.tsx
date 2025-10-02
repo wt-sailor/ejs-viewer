@@ -33,7 +33,7 @@ export default function BodyTemplate({ value, onChange, onAddHeader, onAddFooter
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full h-64 p-4 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+        className="w-full h-[calc(100vh-605px)] p-4 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
         placeholder="Enter body template with includes..."
       />
     </div>
