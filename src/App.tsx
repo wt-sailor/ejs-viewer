@@ -1,6 +1,12 @@
-import { useState, useEffect } from "react";
-import { Eye, Code, Mail } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Mail } from "lucide-react";
 import ejs from "ejs";
+import { debounce } from "./utils/debounce";
+import HeaderTemplate from "./components/HeaderTemplate";
+import BodyTemplate from "./components/BodyTemplate";
+import FooterTemplate from "./components/FooterTemplate";
+import TemplateData from "./components/TemplateData";
+import Preview from "./components/Preview";
 
 const defaultBody = `<%- include('./components/header', {
   title: 'Welcome Email',
@@ -46,7 +52,7 @@ function App() {
       .catch(() => {});
   }, []);
 
-  const handleRender = () => {
+  const handleRender = useCallback(() => {
     try {
       const parsedData = JSON.parse(data);
 
@@ -77,12 +83,40 @@ function App() {
       setError(err instanceof Error ? err.message : "An error occurred");
       setRendered("");
     }
-  };
+  }, [headerTemplate, bodyTemplate, footerTemplate, data]);
+
+  const debouncedRender = useCallback(debounce(handleRender, 500), [
+    handleRender,
+  ]);
+
+  useEffect(() => {
+    debouncedRender();
+  }, [headerTemplate, bodyTemplate, footerTemplate, data, debouncedRender]);
+
+  const handleAddHeader = useCallback(() => {
+    try {
+      const parsed = JSON.parse(data);
+      const companyName = parsed.companyName || "My Company";
+      setBodyTemplate(
+        `<%- include('./components/header', { title: 'Welcome Email', companyName: '${companyName}' }) %>\n` +
+          bodyTemplate
+      );
+    } catch {
+      setBodyTemplate(
+        `<%- include('./components/header', { title: 'Welcome Email', companyName: 'My Company' }) %>\n` +
+          bodyTemplate
+      );
+    }
+  }, [data, bodyTemplate]);
+
+  const handleAddFooter = useCallback(() => {
+    setBodyTemplate(bodyTemplate + `\n<%- include('./components/footer') %>`);
+  }, [bodyTemplate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 text-center">
+      <div className="container mx-auto px-4 pb-8">
+        <div className="sticky top-0 z-10 bg-gradient-to-br from-slate-50 to-slate-100 text-center py-4">
           <div className="flex items-center justify-center gap-3 mb-2">
             <Mail className="w-8 h-8 text-blue-600" />
             <h1 className="text-4xl font-bold text-slate-800">
@@ -96,156 +130,29 @@ function App() {
 
         <div className="grid lg:grid-cols-2 gap-6">
           <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="bg-slate-800 px-4 py-3 flex items-center gap-2">
-                <Code className="w-5 h-5 text-slate-300" />
-                <h2 className="text-white font-semibold">Header Template</h2>
-              </div>
-              <textarea
-                value={headerTemplate}
-                onChange={(e) => setHeaderTemplate(e.target.value)}
-                className="w-full h-48 p-4 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                placeholder="Enter header template..."
-              />
-            </div>
-
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="bg-slate-800 px-4 py-3 flex items-center gap-2 justify-between">
-                <div className="flex items-center gap-2">
-                  <Code className="w-5 h-5 text-slate-300" />
-                  <h2 className="text-white font-semibold">Body Template</h2>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() =>
-                      setBodyTemplate(
-                        `<%- include('./components/header', { title: 'Welcome Email', companyName: companyName }) %>\n` +
-                          bodyTemplate
-                      )
-                    }
-                    className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-1 px-2 rounded"
-                  >
-                    Auto Add Header
-                  </button>
-                  <button
-                    onClick={() =>
-                      setBodyTemplate(
-                        bodyTemplate + `\n<%- include('./components/footer') %>`
-                      )
-                    }
-                    className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-1 px-2 rounded"
-                  >
-                    Auto Add Footer
-                  </button>
-                </div>
-              </div>
-              <textarea
-                value={bodyTemplate}
-                onChange={(e) => setBodyTemplate(e.target.value)}
-                className="w-full h-64 p-4 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                placeholder="Enter body template with includes..."
-              />
-            </div>
-
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="bg-slate-800 px-4 py-3 flex items-center gap-2">
-                <Code className="w-5 h-5 text-slate-300" />
-                <h2 className="text-white font-semibold">Footer Template</h2>
-              </div>
-              <textarea
-                value={footerTemplate}
-                onChange={(e) => setFooterTemplate(e.target.value)}
-                className="w-full h-48 p-4 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                placeholder="Enter footer template..."
-              />
-            </div>
-
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="bg-slate-800 px-4 py-3 flex items-center gap-2">
-                <Code className="w-5 h-5 text-slate-300" />
-                <h2 className="text-white font-semibold">
-                  Template Data (JSON)
-                </h2>
-              </div>
-              <textarea
-                value={data}
-                onChange={(e) => setData(e.target.value)}
-                className="w-full h-48 p-4 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                placeholder="Enter JSON data..."
-              />
-            </div>
-
-            <button
-              onClick={handleRender}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200 flex items-center justify-center gap-2"
-            >
-              <Eye className="w-5 h-5" />
-              Render Template
-            </button>
+            <HeaderTemplate
+              value={headerTemplate}
+              onChange={setHeaderTemplate}
+            />
+            <BodyTemplate
+              value={bodyTemplate}
+              onChange={setBodyTemplate}
+              onAddHeader={handleAddHeader}
+              onAddFooter={handleAddFooter}
+            />
+            <FooterTemplate
+              value={footerTemplate}
+              onChange={setFooterTemplate}
+            />
+            <TemplateData value={data} onChange={setData} />
           </div>
 
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="bg-slate-800 px-4 py-3 flex items-center justify-between">
-                <h2 className="text-white font-semibold">Preview</h2>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setActiveTab("preview")}
-                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                      activeTab === "preview"
-                        ? "bg-blue-600 text-white"
-                        : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-                    }`}
-                  >
-                    Preview
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("html")}
-                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                      activeTab === "html"
-                        ? "bg-blue-600 text-white"
-                        : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-                    }`}
-                  >
-                    HTML
-                  </button>
-                </div>
-              </div>
-              <div
-                className="h-[600px] overflow-auto resize-y"
-                style={{ resize: "vertical" }}
-              >
-                {error ? (
-                  <div className="p-4">
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                      <h3 className="text-red-800 font-semibold mb-2">Error</h3>
-                      <p className="text-red-600 text-sm font-mono">{error}</p>
-                    </div>
-                  </div>
-                ) : rendered ? (
-                  activeTab === "preview" ? (
-                    <iframe
-                      srcDoc={rendered}
-                      className="w-full h-full border-0"
-                      title="Email Preview"
-                      sandbox="allow-same-origin"
-                    />
-                  ) : (
-                    <pre className="p-4 text-sm overflow-auto h-full">
-                      <code className="text-slate-700">{rendered}</code>
-                    </pre>
-                  )
-                ) : (
-                  <div className="h-full flex items-center justify-center text-slate-400">
-                    <div className="text-center">
-                      <Mail className="w-16 h-16 mx-auto mb-3 opacity-50" />
-                      <p>Click "Render Template" to see the preview</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <Preview
+            rendered={rendered}
+            error={error}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
         </div>
       </div>
     </div>
