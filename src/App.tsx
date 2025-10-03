@@ -54,7 +54,7 @@ function App() {
       .catch(() => {});
   }, []);
 
-  const handleRender = useCallback(() => {
+  const handleRender = useCallback(async () => {
     try {
       const parsedData = JSON.parse(data);
 

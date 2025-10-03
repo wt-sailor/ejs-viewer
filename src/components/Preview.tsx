@@ -48,8 +48,12 @@ export default function Preview({
           {error ? (
             <div className="p-4">
               <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg p-4">
-                <h3 className="text-red-800 dark:text-red-200 font-semibold mb-2">Error</h3>
-                <p className="text-red-600 dark:text-red-300 text-sm font-mono">{error}</p>
+                <h3 className="text-red-800 dark:text-red-200 font-semibold mb-2">
+                  Error
+                </h3>
+                <p className="text-red-600 dark:text-red-300 text-sm font-mono">
+                  {error}
+                </p>
               </div>
             </div>
           ) : rendered ? (
@@ -61,8 +65,22 @@ export default function Preview({
                 sandbox="allow-same-origin"
               />
             ) : (
-              <pre className="p-4 text-sm overflow-auto h-full">
-                <code className={resolvedCodeTheme === 'dark' ? 'text-gray-300' : 'text-slate-700'}>{rendered}</code>
+              <pre
+                className={`p-4 text-sm overflow-auto h-full ${
+                  resolvedCodeTheme === "dark"
+                    ? "bg-gray-900 border-gray-800"
+                    : "bg-gray-50 border-gray-300"
+                }`}
+              >
+                <code
+                  className={
+                    resolvedCodeTheme === "dark"
+                      ? "text-gray-300"
+                      : "text-slate-700"
+                  }
+                >
+                  {rendered}{" "}
+                </code>
               </pre>
             )
           ) : (
