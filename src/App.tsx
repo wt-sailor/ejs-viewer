@@ -7,6 +7,8 @@ import BodyTemplate from "./components/BodyTemplate";
 import FooterTemplate from "./components/FooterTemplate";
 import TemplateData from "./components/TemplateData";
 import Preview from "./components/Preview";
+import { ThemeSwitcher } from "./components/ThemeSwitcher";
+import { CodeThemeSwitcher } from "./components/CodeThemeSwitcher";
 
 const defaultBody = `<%- include('./components/header', {
   title: 'Welcome Email',
@@ -114,22 +116,21 @@ function App() {
   }, [bodyTemplate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 pb-8">
-        <div className="sticky top-0 z-10 bg-gradient-to-br from-slate-50 to-slate-100 text-center py-4">
+        <div className="sticky top-0 z-10 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 text-center py-4">
           <div className="flex items-center justify-center gap-3 mb-2">
-            <Mail className="w-8 h-8 text-blue-600" />
-            <h1 className="text-4xl font-bold text-slate-800">
+            <ThemeSwitcher />
+            <Mail className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            <h1 className="text-2xl lg:text-4xl font-bold text-slate-800 dark:text-slate-200">
               EJS Email Template Viewer
             </h1>
+            <CodeThemeSwitcher />
           </div>
-          <p className="text-slate-600">
-            Create and preview email templates with live rendering
-          </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
-          <div className="space-y-6">
+          <div className="space-y-4">
             <HeaderTemplate
               value={headerTemplate}
               onChange={setHeaderTemplate}
