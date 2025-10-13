@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { Mail } from "lucide-react";
+import { Mail, Save } from "lucide-react";
 import ejs from "ejs";
+import JSON5 from "json5";
 import { debounce } from "./utils/debounce";
 import HeaderTemplate from "./components/HeaderTemplate";
 import BodyTemplate from "./components/BodyTemplate";
@@ -43,20 +44,30 @@ function App() {
   const [activeTab, setActiveTab] = useState<"preview" | "html">("preview");
 
   useEffect(() => {
-    fetch("/components/header.ejs")
-      .then((res) => res.text())
-      .then((text) => setHeaderTemplate(text))
-      .catch(() => {});
+    const savedHeader = localStorage.getItem('ejs-viewer-header');
+    if (savedHeader) {
+      setHeaderTemplate(savedHeader);
+    } else {
+      fetch("/components/header.ejs")
+        .then((res) => res.text())
+        .then((text) => setHeaderTemplate(text))
+        .catch(() => {});
+    }
 
-    fetch("/components/footer.ejs")
-      .then((res) => res.text())
-      .then((text) => setFooterTemplate(text))
-      .catch(() => {});
+    const savedFooter = localStorage.getItem('ejs-viewer-footer');
+    if (savedFooter) {
+      setFooterTemplate(savedFooter);
+    } else {
+      fetch("/components/footer.ejs")
+        .then((res) => res.text())
+        .then((text) => setFooterTemplate(text))
+        .catch(() => {});
+    }
   }, []);
 
   const handleRender = useCallback(async () => {
     try {
-      const parsedData = JSON.parse(data);
+      const parsedData = JSON5.parse(data);
 
       let processedTemplate = bodyTemplate;
 
@@ -97,7 +108,7 @@ function App() {
 
   const handleAddHeader = useCallback(() => {
     try {
-      const parsed = JSON.parse(data);
+      const parsed = JSON5.parse(data);
       const companyName = parsed.companyName || "My Company";
       setBodyTemplate(
         `<%- include('./components/header', { title: 'Welcome Email', companyName: '${companyName}' }) %>\n` +
@@ -115,6 +126,11 @@ function App() {
     setBodyTemplate(bodyTemplate + `\n<%- include('./components/footer') %>`);
   }, [bodyTemplate]);
 
+  const handleSaveTemplates = useCallback(() => {
+    localStorage.setItem('ejs-viewer-header', headerTemplate);
+    localStorage.setItem('ejs-viewer-footer', footerTemplate);
+  }, [headerTemplate, footerTemplate]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 pb-8">
@@ -126,6 +142,14 @@ function App() {
               EJS Email Template Viewer
             </h1>
             <CodeThemeSwitcher />
+            <button
+              onClick={handleSaveTemplates}
+              className="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold py-2 px-3 rounded flex items-center gap-1"
+              title="Save Header and Footer to Local Storage"
+            >
+              <Save className="w-4 h-4" />
+              Save
+            </button>
           </div>
         </div>
 
