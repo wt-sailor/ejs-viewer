@@ -44,7 +44,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<"preview" | "html">("preview");
 
   useEffect(() => {
-    const savedHeader = localStorage.getItem('ejs-viewer-header');
+    const savedHeader = localStorage.getItem("ejs-viewer-header");
     if (savedHeader) {
       setHeaderTemplate(savedHeader);
     } else {
@@ -54,7 +54,7 @@ function App() {
         .catch(() => {});
     }
 
-    const savedFooter = localStorage.getItem('ejs-viewer-footer');
+    const savedFooter = localStorage.getItem("ejs-viewer-footer");
     if (savedFooter) {
       setFooterTemplate(savedFooter);
     } else {
@@ -71,23 +71,53 @@ function App() {
 
       let processedTemplate = bodyTemplate;
 
+      const evaluateParams = (
+        paramsString: string,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        context: Record<string, any>
+      ) => {
+        if (!paramsString) return {};
+        try {
+          const cleanParams = paramsString
+            .replace(/,\s*}/g, "}")
+            .replace(/,\s*\]/g, "]");
+          const func = new Function(
+            ...Object.keys(context),
+            `"use strict";return (${cleanParams});`
+          );
+          return func(...Object.values(context));
+        } catch (err) {
+          console.warn("Failed to evaluate include params:", err);
+          return {};
+        }
+      };
       const headerIncludeRegex =
         /<%[-=]\s*include\(['"]\.\/components\/header['"],?\s*(\{[^}]*\})?\s*\)\s*%>/g;
+
       processedTemplate = processedTemplate.replace(
         headerIncludeRegex,
-        (match, params) => {
-          if (params) {
-            return headerTemplate;
-          }
-          return headerTemplate;
+        (match, paramsString) => {
+          const includeData = {
+            ...parsedData,
+            ...evaluateParams(paramsString, parsedData),
+          };
+          return ejs.render(headerTemplate, includeData);
         }
       );
 
       const footerIncludeRegex =
         /<%[-=]\s*include\(['"]\.\/components\/footer['"],?\s*(\{[^}]*\})?\s*\)\s*%>/g;
-      processedTemplate = processedTemplate.replace(footerIncludeRegex, () => {
-        return footerTemplate;
-      });
+
+      processedTemplate = processedTemplate.replace(
+        footerIncludeRegex,
+        (match, paramsString) => {
+          const includeData = {
+            ...parsedData,
+            ...evaluateParams(paramsString, parsedData),
+          };
+          return ejs.render(footerTemplate, includeData);
+        }
+      );
 
       const result = ejs.render(processedTemplate, parsedData);
       setRendered(result);
@@ -127,8 +157,8 @@ function App() {
   }, [bodyTemplate]);
 
   const handleSaveTemplates = useCallback(() => {
-    localStorage.setItem('ejs-viewer-header', headerTemplate);
-    localStorage.setItem('ejs-viewer-footer', footerTemplate);
+    localStorage.setItem("ejs-viewer-header", headerTemplate);
+    localStorage.setItem("ejs-viewer-footer", footerTemplate);
   }, [headerTemplate, footerTemplate]);
 
   return (
