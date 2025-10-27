@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Mail, Menu, Save, Plus, Trash2 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Mail, Menu, X, Save, Plus, Trash2 } from "lucide-react";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { CodeThemeSwitcher } from "./CodeThemeSwitcher";
 
@@ -17,6 +17,23 @@ export function Header({
   onClearAll,
 }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   return (
     <div className="sticky top-0 z-10 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 text-center py-4">
@@ -25,16 +42,16 @@ export function Header({
         <h1 className="text-2xl lg:text-4xl font-bold text-slate-800 dark:text-slate-200">
           EJS Email Template Viewer
         </h1>
-        <div className="relative">
+        <div className="relative" ref={menuRef}>
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="bg-slate-600 hover:bg-slate-700 text-white p-2 rounded-md"
             title="Menu"
           >
-            <Menu className="w-5 h-5" />
+            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
           {isMenuOpen && (
-            <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-20">
+            <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-20 sm:left-1/2 sm:transform sm:-translate-x-1/2">
               <div className="p-4">
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
