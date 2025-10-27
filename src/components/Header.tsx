@@ -48,10 +48,14 @@ export function Header({
             className="bg-slate-600 hover:bg-slate-700 text-white p-2 rounded-md"
             title="Menu"
           >
-            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {isMenuOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
           </button>
           {isMenuOpen && (
-            <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-20 sm:left-1/2 sm:transform sm:-translate-x-1/2">
+            <div className="absolute right-0 mt-2 w-80 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-20 sm:left-1/2 sm:transform sm:-translate-x-1/2">
               <div className="p-4">
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
