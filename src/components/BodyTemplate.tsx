@@ -1,20 +1,17 @@
-import { Code } from "lucide-react";
+import { Code, Save } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
 interface BodyTemplateProps {
   value: string;
   onChange: (value: string) => void;
-  onAddHeader: () => void;
-  onAddFooter: () => void;
 }
 
-export default function BodyTemplate({
-  value,
-  onChange,
-  onAddHeader,
-  onAddFooter,
-}: BodyTemplateProps) {
+export default function BodyTemplate({ value, onChange }: BodyTemplateProps) {
   const { resolvedCodeTheme } = useTheme();
+
+  const handleSave = () => {
+    localStorage.setItem("ejs-viewer-body", value);
+  };
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
@@ -25,16 +22,11 @@ export default function BodyTemplate({
         </div>
         <div className="flex gap-2">
           <button
-            onClick={onAddHeader}
-            className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-1 px-2 rounded"
+            onClick={handleSave}
+            className="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold py-1.5 px-1.5 rounded flex items-center justify-center"
+            title="Save Body Template to Local Storage"
           >
-            Auto Add Header
-          </button>
-          <button
-            onClick={onAddFooter}
-            className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-1 px-2 rounded"
-          >
-            Auto Add Footer
+            <Save className="w-4 h-4" />
           </button>
         </div>
       </div>

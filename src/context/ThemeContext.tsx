@@ -30,7 +30,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   };
 
   const resolvedTheme = theme === 'system' ? getSystemTheme() : theme;
-  const resolvedCodeTheme = codeTheme === 'system' ? getSystemTheme() : codeTheme;
+  const resolvedCodeTheme = codeTheme === 'system' ? resolvedTheme : codeTheme;
 
   useEffect(() => {
     const root = document.documentElement;

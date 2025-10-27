@@ -1,4 +1,4 @@
-import { Code } from "lucide-react";
+import { Code, Save } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
 interface TemplateDataProps {
@@ -9,11 +9,24 @@ interface TemplateDataProps {
 export default function TemplateData({ value, onChange }: TemplateDataProps) {
   const { resolvedCodeTheme } = useTheme();
 
+  const handleSave = () => {
+    localStorage.setItem("ejs-viewer-data", value);
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-      <div className="bg-slate-800 dark:bg-slate-600  px-4 py-3 flex items-center gap-2">
-        <Code className="w-5 h-5 text-slate-300" />
-        <h2 className="text-white font-semibold">Template Data (JSON)</h2>
+      <div className="bg-slate-800 dark:bg-slate-600  px-4 py-3 flex items-center gap-2 justify-between">
+        <div className="flex items-center gap-2">
+          <Code className="w-5 h-5 text-slate-300" />
+          <h2 className="text-white font-semibold">Template Data (JSON)</h2>
+        </div>
+        <button
+          onClick={handleSave}
+          className="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold py-1.5 px-1.5 rounded flex items-center justify-center"
+          title="Save Template Data to Local Storage"
+        >
+          <Save className="w-4 h-4" />
+        </button>
       </div>
       <div
         className={`overflow-hidden border

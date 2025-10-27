@@ -1,15 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { Mail, Save } from "lucide-react";
 import ejs from "ejs";
 import JSON5 from "json5";
+import toast, { Toaster } from "react-hot-toast";
 import { debounce } from "./utils/debounce";
-import HeaderTemplate from "./components/HeaderTemplate";
-import BodyTemplate from "./components/BodyTemplate";
-import FooterTemplate from "./components/FooterTemplate";
-import TemplateData from "./components/TemplateData";
+import { Header } from "./components/Header";
+import { TemplateEditor } from "./components/TemplateEditor";
 import Preview from "./components/Preview";
-import { ThemeSwitcher } from "./components/ThemeSwitcher";
-import { CodeThemeSwitcher } from "./components/CodeThemeSwitcher";
 
 const defaultBody = `<%- include('./components/header', {
   title: 'Welcome Email',
@@ -62,6 +58,16 @@ function App() {
         .then((res) => res.text())
         .then((text) => setFooterTemplate(text))
         .catch(() => {});
+    }
+
+    const savedBody = localStorage.getItem("ejs-viewer-body");
+    if (savedBody) {
+      setBodyTemplate(savedBody);
+    }
+
+    const savedData = localStorage.getItem("ejs-viewer-data");
+    if (savedData) {
+      setData(savedData);
     }
   }, []);
 
@@ -159,58 +165,55 @@ function App() {
   const handleSaveTemplates = useCallback(() => {
     localStorage.setItem("ejs-viewer-header", headerTemplate);
     localStorage.setItem("ejs-viewer-footer", footerTemplate);
+    toast.success("Header, Footer and Recipient Email Saved.");
   }, [headerTemplate, footerTemplate]);
 
+  const handleClearAllData = () => {
+    localStorage.removeItem("ejs-viewer-header");
+    localStorage.removeItem("ejs-viewer-footer");
+    localStorage.removeItem("ejs-viewer-body");
+    localStorage.removeItem("ejs-viewer-data");
+    localStorage.removeItem("ejs-viewer-recipient-email");
+    localStorage.removeItem("theme");
+    localStorage.removeItem("codeTheme");
+    toast.success("All saved data cleared!");
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      <div className="container mx-auto px-4 pb-8">
-        <div className="sticky top-0 z-10 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 text-center py-4">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <ThemeSwitcher />
-            <Mail className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-            <h1 className="text-2xl lg:text-4xl font-bold text-slate-800 dark:text-slate-200">
-              EJS Email Template Viewer
-            </h1>
-            <CodeThemeSwitcher />
-            <button
-              onClick={handleSaveTemplates}
-              className="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold py-2 px-3 rounded flex items-center gap-1"
-              title="Save Header and Footer to Local Storage"
-            >
-              <Save className="w-4 h-4" />
-              Save
-            </button>
-          </div>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <HeaderTemplate
-              value={headerTemplate}
-              onChange={setHeaderTemplate}
-            />
-            <BodyTemplate
-              value={bodyTemplate}
-              onChange={setBodyTemplate}
-              onAddHeader={handleAddHeader}
-              onAddFooter={handleAddFooter}
-            />
-            <FooterTemplate
-              value={footerTemplate}
-              onChange={setFooterTemplate}
-            />
-            <TemplateData value={data} onChange={setData} />
-          </div>
-
-          <Preview
-            rendered={rendered}
-            error={error}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
+    <>
+      <Toaster />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+        <div className="container mx-auto px-4 pb-8">
+          <Header
+            onSaveTemplates={handleSaveTemplates}
+            onAddHeader={handleAddHeader}
+            onAddFooter={handleAddFooter}
+            onClearAll={handleClearAllData}
           />
+
+          <div className="grid lg:grid-cols-2 gap-6">
+            <TemplateEditor
+              headerTemplate={headerTemplate}
+              setHeaderTemplate={setHeaderTemplate}
+              bodyTemplate={bodyTemplate}
+              setBodyTemplate={setBodyTemplate}
+              footerTemplate={footerTemplate}
+              setFooterTemplate={setFooterTemplate}
+              data={data}
+              setData={setData}
+              rendered={rendered}
+            />
+
+            <Preview
+              rendered={rendered}
+              error={error}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

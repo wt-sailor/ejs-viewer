@@ -11,7 +11,7 @@ export function ThemeSwitcher() {
   ];
 
   return (
-    <div className="flex items-center gap-1 bg-gray-200 dark:bg-gray-800 rounded-lg p-1">
+    <div className="flex items-center gap-1 bg-gray-200 dark:bg-gray-700 rounded-lg p-1">
       {themes.map(({ value, icon: Icon, label }) => (
         <button
           key={value}
@@ -20,7 +20,7 @@ export function ThemeSwitcher() {
             flex items-center justify-center w-8 h-8 rounded-md transition-all
             ${
               theme === value
-                ? "bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white"
+                ? "bg-white dark:bg-gray-600 shadow-sm text-gray-900 dark:text-white"
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             }
           `}
