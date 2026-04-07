@@ -5,13 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev-all": "vite && cd server && yarn dev",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "server-dev": "cd server && yarn dev",
+    "server-build": "cd server && yarn build",
+    "server-start": "cd server && yarn start", 
     "typecheck": "tsc --noEmit -p tsconfig.app.json"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.57.4",
     "ejs": "^3.1.10",
     "json5": "^2.2.3",
     "lucide-react": "^0.344.0",

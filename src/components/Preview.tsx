@@ -62,7 +62,7 @@ export default function Preview({
                 srcDoc={rendered}
                 className="w-full h-full border-0"
                 title="Email Preview"
-                sandbox="allow-same-origin"
+                sandbox="allow-same-origin allow-scripts"
               />
             ) : (
               <pre

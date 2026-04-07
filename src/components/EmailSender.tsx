@@ -30,7 +30,9 @@ export function EmailSender({ rendered }: EmailSenderProps) {
     setIsSending(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/send-email`, {
+      const baseUrl = import.meta.env.VITE_API_URL || '/api';
+      const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+      const response = await fetch(`${cleanBaseUrl}/send-email`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

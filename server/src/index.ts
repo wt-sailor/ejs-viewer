@@ -28,7 +28,7 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-app.use("/api-docs", swaggerUi.serve as any, swaggerUi.setup(swaggerSpec) as any);
+app.use("/api/api-docs", swaggerUi.serve as any, swaggerUi.setup(swaggerSpec) as any);
 
 /**
  * @swagger
@@ -96,7 +96,7 @@ app.use("/api-docs", swaggerUi.serve as any, swaggerUi.setup(swaggerSpec) as any
  *                   type: string
  *                   example: "Failed to send email"
  */
-app.post("/send-email", async (req: Request, res: Response) => {
+app.post("/api/send-email", async (req: Request, res: Response) => {
   try {
     const { html, recipientEmail } = req.body;
 
@@ -117,7 +117,18 @@ app.post("/send-email", async (req: Request, res: Response) => {
   }
 });
 
+import path from "path";
+// Serve frontend dist directory
+const frontendDist = path.join(__dirname, "../../dist");
+app.use(express.static(frontendDist));
+app.get("*", (req, res) => {
+  if (req.path.startsWith("/api")) {
+    return res.status(404).json({ error: "API Route Not Found" });
+  }
+  res.sendFile(path.join(frontendDist, "index.html"));
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Swagger UI available at http://localhost:${PORT}/api-docs`);
+  console.log(`Swagger UI available at http://localhost:${PORT}/api/api-docs`);
 });

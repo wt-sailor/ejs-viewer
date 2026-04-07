@@ -102,7 +102,7 @@ function App() {
 
       processedTemplate = processedTemplate.replace(
         headerIncludeRegex,
-        (match, paramsString) => {
+        (_match, paramsString) => {
           const includeData = {
             ...parsedData,
             ...evaluateParams(paramsString, parsedData),
@@ -116,7 +116,7 @@ function App() {
 
       processedTemplate = processedTemplate.replace(
         footerIncludeRegex,
-        (match, paramsString) => {
+        (_match, paramsString) => {
           const includeData = {
             ...parsedData,
             ...evaluateParams(paramsString, parsedData),
