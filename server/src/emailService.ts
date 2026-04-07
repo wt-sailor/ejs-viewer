@@ -1,11 +1,12 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  host: process.env.MAILTRAP_HOST || "sandbox.smtp.mailtrap.io",
-  port: parseInt(process.env.MAILTRAP_PORT || "2525"),
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: parseInt(process.env.SMTP_PORT || "587"),
+  secure: parseInt(process.env.SMTP_PORT || "587") === 465,
   auth: {
-    user: process.env.MAILTRAP_USER || "1b9392ab357236",
-    pass: process.env.MAILTRAP_PASS || "a6ae36673d49cb",
+    user: process.env.SMTP_USER || "umang@weetechsolution.com",
+    pass: process.env.SMTP_PASS || "wtpe fyto klam rokg",
   },
 });
 
