@@ -21,13 +21,13 @@ const defaultBody = `<%- include('./components/header', {
 <%- include('./components/footer') %>`;
 
 const defaultData = `{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "actionUrl": "https://example.com/dashboard",
-  "companyName": "My Company",
+  "name": "Lugh Tuatha Dé",
+  "email": "umang@blogforge.in",
+  "actionUrl": "https://vibemessage.sailorlabs.in/dashboard",
+  "companyName": "Sailor Labs.in",
   "title": "Welcome Email",
-  "unsubscribeUrl": "https://example.com/unsubscribe",
-  "privacyUrl": "https://example.com/privacy"
+  "unsubscribeUrl": "https://vibemessage.sailorlabs.in",
+  "privacyUrl": "https://vibemessage.sailorlabs.in/dashboard"
 }`;
 
 function App() {
