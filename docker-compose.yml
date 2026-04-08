@@ -1,16 +1,17 @@
 version: "3.8"
 
 services:
-  ejs-viewer:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ejs-viewer-app
+    container_name: ejs-viewer
     ports:
       - "5153:5153"
     env_file:
       - .env
       - server/.env
-    restart: unless-stopped
     environment:
+      - NODE_ENV=production
       - PORT=5153
+    restart: unless-stopped

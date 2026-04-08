@@ -1,14 +1,12 @@
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 
 # --- Build Frontend ---
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
-# Copy frontend code and build
-COPY tsconfig.json tsconfig.app.json tsconfig.node.json vite.config.ts postcss.config.js tailwind.config.js index.html ./
-COPY src ./src
-COPY public ./public
+# Copy all files (respecting .dockerignore) and build frontend
+COPY . .
 RUN yarn build
 
 # --- Build Backend ---
@@ -16,31 +14,27 @@ WORKDIR /app/server
 COPY server/package.json server/yarn.lock ./
 RUN yarn install --frozen-lockfile
 
-# Copy backend code and build
-COPY server/tsconfig.json ./
-COPY server/src ./src
+# Copy backend files and build
+COPY server/ ./
 RUN yarn build
 
 # --- Production Image ---
-FROM node:20-alpine
+FROM node:24-alpine
 WORKDIR /app
 
-# Set environments
 ENV NODE_ENV=production
 ENV PORT=5153
 
-# Copy frontend build
+# Copy frontend build (to be served by backend)
 COPY --from=builder /app/dist ./dist
 
-# Copy backend
+# Set up server
 WORKDIR /app/server
-COPY --from=builder /app/server/package.json ./
-COPY --from=builder /app/server/yarn.lock ./
+COPY --from=builder /app/server/package.json /app/server/yarn.lock ./
 COPY --from=builder /app/server/dist ./dist
 
-# Install production dependencies for server
+# Install production dependencies only
 RUN yarn install --production --frozen-lockfile
 
 EXPOSE 5153
-
 CMD ["node", "dist/index.js"]

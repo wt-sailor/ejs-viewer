@@ -1,0 +1,10 @@
+node_modules
+dist
+server/node_modules
+server/dist
+.git
+.env
+server/.env
+Dockerfile
+docker-compose.yml
+README.md
