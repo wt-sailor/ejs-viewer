@@ -11,3 +11,14 @@ createRoot(document.getElementById("root")!).render(
     </ThemeProvider>
   </StrictMode>
 );
+
+if ('serviceWorker' in navigator) {
+  const isIframe = window.self !== window.top;
+  const isLovablePreview = window.location.hostname.includes('lovable');
+
+  if (isIframe || isLovablePreview) {
+    navigator.serviceWorker.getRegistrations().then((regs) => {
+      regs.forEach((reg) => reg.unregister());
+    });
+  }
+}

@@ -1,12 +1,14 @@
 import { useState, useCallback, useEffect } from "react";
 import { Send, Save } from "lucide-react";
 import toast from "react-hot-toast";
+import { useOnlineStatus } from "../hooks/useOnlineStatus";
 
 interface EmailSenderProps {
   rendered: string;
 }
 
 export function EmailSender({ rendered }: EmailSenderProps) {
+  const isOnline = useOnlineStatus();
   const [recipientEmail, setRecipientEmail] = useState("test@example.com");
   const [isSending, setIsSending] = useState(false);
 
@@ -86,11 +88,11 @@ export function EmailSender({ rendered }: EmailSenderProps) {
 
         <button
           onClick={handleSendEmail}
-          disabled={isSending}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-2 px-4 rounded-md flex items-center justify-center gap-2"
+          disabled={isSending || !isOnline}
+          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-semibold py-2 px-4 rounded-md flex items-center justify-center gap-2"
         >
           <Send className="w-4 h-4" />
-          {isSending ? "Sending..." : "Send Email"}
+          {isSending ? "Sending..." : isOnline ? "Send Email" : "Send Email (Offline)"}
         </button>
       </div>
     </div>
