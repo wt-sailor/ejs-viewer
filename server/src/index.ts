@@ -16,7 +16,9 @@ const allowedOrigins = [
   "https://ejsviewer.sailorlabs.in",
   "http://localhost:5153",
   "http://localhost:5154",
-  "http://localhost:3001"
+  "http://localhost:3001",
+  "http://100.74.2.53:5153",
+  "http://100.74.2.53:3001"
 ];
 
 app.use(cors({
@@ -24,7 +26,8 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.warn(`CORS blocked for origin: ${origin}`);
+      callback(null, false);
     }
   },
   credentials: true
@@ -138,12 +141,18 @@ app.post("/api/send-email", async (req: Request, res: Response) => {
 import path from "path";
 // Serve frontend dist directory
 const frontendDist = path.join(__dirname, "../../dist");
+console.log(`Serving static files from: ${frontendDist}`);
 app.use(express.static(frontendDist));
 app.get("*", (req, res) => {
   if (req.path.startsWith("/api")) {
     return res.status(404).json({ error: "API Route Not Found" });
   }
-  res.sendFile(path.join(frontendDist, "index.html"));
+  res.sendFile(path.join(frontendDist, "index.html"), (err) => {
+    if (err) {
+      console.error(`Error sending index.html: ${err.message}`);
+      res.status(404).send("Front-end build not found. Please ensure the app is built correctly.");
+    }
+  });
 });
 
 app.listen(PORT, () => {
