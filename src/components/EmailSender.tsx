@@ -9,7 +9,7 @@ interface EmailSenderProps {
 
 export function EmailSender({ rendered }: EmailSenderProps) {
   const isOnline = useOnlineStatus();
-  const [recipientEmail, setRecipientEmail] = useState("test@example.com");
+  const [recipientEmail, setRecipientEmail] = useState("umang@weetechsolution.com");
   const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
