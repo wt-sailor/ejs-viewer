@@ -9,7 +9,7 @@ interface EmailSenderProps {
 
 export function EmailSender({ rendered }: EmailSenderProps) {
   const isOnline = useOnlineStatus();
-  const [recipientEmail, setRecipientEmail] = useState("umang@weetechsolution.com");
+  const [recipientEmail, setRecipientEmail] = useState("");
   const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
@@ -32,8 +32,10 @@ export function EmailSender({ rendered }: EmailSenderProps) {
     setIsSending(true);
 
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || '/api';
-      const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+      const baseUrl = import.meta.env.VITE_API_URL || "/api";
+      const cleanBaseUrl = baseUrl.endsWith("/")
+        ? baseUrl.slice(0, -1)
+        : baseUrl;
       const response = await fetch(`${cleanBaseUrl}/send-email`, {
         method: "POST",
         headers: {
@@ -49,12 +51,16 @@ export function EmailSender({ rendered }: EmailSenderProps) {
 
       if (response.ok) {
         console.log(`Email sent successfully! Message ID: ${result.messageId}`);
-        toast.success(`Email sent successfully! Message ID: ${result.messageId}`);
+        toast.success(
+          `Email sent successfully! Message ID: ${result.messageId}`,
+        );
       } else {
         toast.error(`Failed to send email: ${result.error}`);
       }
     } catch (error) {
-      toast.error(`Error sending email: ${error instanceof Error ? error.message : "Unknown error"}`);
+      toast.error(
+        `Error sending email: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     } finally {
       setIsSending(false);
     }
@@ -63,7 +69,9 @@ export function EmailSender({ rendered }: EmailSenderProps) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-4">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Send Test Email</h3>
+        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
+          Send Test Email
+        </h3>
         <button
           onClick={handleSave}
           className="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold py-1.5 px-1.5 rounded flex items-center justify-center"
@@ -92,7 +100,11 @@ export function EmailSender({ rendered }: EmailSenderProps) {
           className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-semibold py-2 px-4 rounded-md flex items-center justify-center gap-2"
         >
           <Send className="w-4 h-4" />
-          {isSending ? "Sending..." : isOnline ? "Send Email" : "Send Email (Offline)"}
+          {isSending
+            ? "Sending..."
+            : isOnline
+              ? "Send Email"
+              : "Send Email (Offline)"}
         </button>
       </div>
     </div>

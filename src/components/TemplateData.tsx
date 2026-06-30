@@ -1,5 +1,8 @@
 import { Code, Save } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import Editor from "react-simple-code-editor";
+import Prism from "prismjs";
+import "prismjs/components/prism-json";
 
 interface TemplateDataProps {
   value: string;
@@ -49,19 +52,31 @@ export default function TemplateData({ value, onChange }: TemplateDataProps) {
         >
           JSON
         </div>
-        <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+        <div
           className={`
-            w-full h-44 p-4 font-mono text-sm resize-none focus:outline-none
+            w-full h-44 overflow-auto font-mono text-sm focus-within:outline-none code-theme-${resolvedCodeTheme}
             ${
               resolvedCodeTheme === "dark"
                 ? "text-gray-100 bg-gray-900"
                 : "text-gray-900 bg-gray-50"
             }
           `}
-          placeholder="Enter JSON data..."
-        />
+        >
+          <Editor
+            value={value}
+            onValueChange={onChange}
+            highlight={(code) =>
+              Prism.highlight(code, Prism.languages.json, "json")
+            }
+            padding={16}
+            style={{
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+              fontSize: 14,
+              minHeight: "100%",
+            }}
+            textareaClassName="focus:outline-none"
+          />
+        </div>
       </div>
     </div>
   );

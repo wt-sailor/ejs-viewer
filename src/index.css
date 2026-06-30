@@ -1,3 +1,96 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Scoped Prism Syntax Highlighting Themes */
+.code-theme-light .token.comment,
+.code-theme-light .token.prolog,
+.code-theme-light .token.doctype,
+.code-theme-light .token.cdata {
+  color: #64748b; /* slate-500 */
+  font-style: italic;
+}
+.code-theme-light .token.punctuation {
+  color: #64748b; /* slate-500 */
+}
+.code-theme-light .token.tag {
+  color: #2563eb; /* blue-600 */
+}
+.code-theme-light .token.attr-name {
+  color: #d97706; /* amber-600 */
+}
+.code-theme-light .token.attr-value,
+.code-theme-light .token.string {
+  color: #059669; /* emerald-600 */
+}
+.code-theme-light .token.operator,
+.code-theme-light .token.entity,
+.code-theme-light .token.url {
+  color: #4f46e5; /* indigo-600 */
+}
+
+.code-theme-dark .token.comment,
+.code-theme-dark .token.prolog,
+.code-theme-dark .token.doctype,
+.code-theme-dark .token.cdata {
+  color: #64748b; /* slate-500 */
+  font-style: italic;
+}
+.code-theme-dark .token.punctuation {
+  color: #94a3b8; /* slate-400 */
+}
+.code-theme-dark .token.tag {
+  color: #93c5fd; /* blue-300 */
+}
+.code-theme-dark .token.attr-name {
+  color: #fcd34d; /* amber-300 */
+}
+.code-theme-dark .token.attr-value,
+.code-theme-dark .token.string {
+  color: #6ee7b7; /* emerald-300 */
+}
+.code-theme-dark .token.operator,
+.code-theme-dark .token.entity,
+.code-theme-dark .token.url {
+  color: #a5b4fc; /* indigo-300 */
+}
+
+/* Additional JSON and General Token Styling */
+.code-theme-light .token.property {
+  color: #0369a1; /* sky-700 */
+  font-weight: 600;
+}
+.code-theme-light .token.number,
+.code-theme-light .token.boolean {
+  color: #7c3aed; /* violet-600 */
+}
+
+.code-theme-dark .token.property {
+  color: #7dd3fc; /* sky-300 */
+  font-weight: 600;
+}
+.code-theme-dark .token.number,
+.code-theme-dark .token.boolean {
+  color: #c084fc; /* violet-400 */
+}
+
+/* EJS Highlight Styles */
+.code-theme-light .token.ejs {
+  background-color: rgba(254, 243, 199, 0.4); /* light amber background */
+  border-radius: 4px;
+  padding: 0 2px;
+}
+.code-theme-light .token.ejs .token.delimiter {
+  color: #b45309; /* amber-700 */
+  font-weight: bold;
+}
+
+.code-theme-dark .token.ejs {
+  background-color: rgba(120, 113, 108, 0.25); /* stone background */
+  border-radius: 4px;
+  padding: 0 2px;
+}
+.code-theme-dark .token.ejs .token.delimiter {
+  color: #f59e0b; /* amber-500 */
+  font-weight: bold;
+}

@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Code, ChevronDown, ChevronUp, Save } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import Editor from "react-simple-code-editor";
+import Prism from "prismjs";
+import "prismjs/components/prism-markup";
+import "prismjs/components/prism-css";
+import "prismjs/components/prism-javascript";
 
 interface HeaderTemplateProps {
   value: string;
@@ -48,7 +53,7 @@ export default function HeaderTemplate({
       </div>
       <div
         className={`overflow-hidden transition-all duration-300 ${
-          isExpanded ? "max-h-56 opacity-100" : "max-h-0 opacity-0"
+          isExpanded ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div
@@ -72,19 +77,33 @@ export default function HeaderTemplate({
           >
             EJS
           </div>
-          <textarea
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
+          <div
             className={`
-              w-full h-48 p-4 font-mono text-sm resize-none focus:outline-none
+              w-full h-[500px] overflow-auto font-mono text-sm focus-within:outline-none code-theme-${resolvedCodeTheme}
               ${
                 resolvedCodeTheme === "dark"
                   ? "text-gray-100 bg-gray-900"
-                  : "text-gray-900 bg-gray-50"
+                  : "text-gray-950 bg-gray-50"
               }
             `}
-            placeholder="Enter header template..."
-          />
+          >
+            <Editor
+              textareaId="header-editor"
+              value={value}
+              onValueChange={onChange}
+              highlight={(code) =>
+                Prism.highlight(code, Prism.languages.markup, "markup")
+              }
+              padding={16}
+              style={{
+                fontFamily:
+                  'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                fontSize: 14,
+                minHeight: "100%",
+              }}
+              textareaClassName="focus:outline-none"
+            />
+          </div>
         </div>
       </div>
     </div>

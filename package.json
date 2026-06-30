@@ -18,16 +18,21 @@
   },
   "dependencies": {
     "ejs": "^3.1.10",
+    "js-beautify": "^1.15.4",
     "json5": "^2.2.3",
     "lucide-react": "^0.344.0",
+    "prismjs": "^1.30.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.6.0",
+    "react-simple-code-editor": "^0.14.1",
     "vite-plugin-pwa": "^1.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
     "@types/ejs": "^3.1.5",
+    "@types/js-beautify": "^1.14.3",
+    "@types/prismjs": "^1.26.6",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",

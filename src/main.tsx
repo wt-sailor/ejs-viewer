@@ -3,6 +3,26 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { ThemeProvider } from "./context/ThemeContext.tsx";
+import Prism from "prismjs";
+import "prismjs/components/prism-markup";
+import "prismjs/components/prism-css";
+import "prismjs/components/prism-javascript";
+
+// Define EJS custom token grammar
+if (Prism.languages.markup) {
+  Prism.languages.insertBefore("markup", "tag", {
+    ejs: {
+      pattern: /<%[-=]?[\s\S]*?%>/,
+      inside: {
+        delimiter: {
+          pattern: /^<%[-=]?|%>$/,
+          alias: "punctuation",
+        },
+        rest: Prism.languages.javascript,
+      },
+    },
+  });
+}
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

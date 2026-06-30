@@ -1,5 +1,11 @@
-import { Code, Save } from "lucide-react";
+import { useState } from "react";
+import { Code, Save, ChevronDown, ChevronUp } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import Editor from "react-simple-code-editor";
+import Prism from "prismjs";
+import "prismjs/components/prism-markup";
+import "prismjs/components/prism-css";
+import "prismjs/components/prism-javascript";
 
 interface BodyTemplateProps {
   value: string;
@@ -7,6 +13,7 @@ interface BodyTemplateProps {
 }
 
 export default function BodyTemplate({ value, onChange }: BodyTemplateProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const { resolvedCodeTheme } = useTheme();
 
   const handleSave = () => {
@@ -15,55 +22,88 @@ export default function BodyTemplate({ value, onChange }: BodyTemplateProps) {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-      <div className="bg-slate-800 dark:bg-slate-600  px-4 py-3 flex items-center gap-2 justify-between">
+      <div
+        className="bg-slate-800 dark:bg-slate-600 px-4 py-3 flex items-center justify-between cursor-pointer"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
         <div className="flex items-center gap-2">
           <Code className="w-5 h-5 text-slate-300" />
           <h2 className="text-white font-semibold">Body Template</h2>
         </div>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           <button
-            onClick={handleSave}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSave();
+            }}
             className="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold py-1.5 px-1.5 rounded flex items-center justify-center"
             title="Save Body Template to Local Storage"
           >
             <Save className="w-4 h-4" />
           </button>
+          {isExpanded ? (
+            <ChevronUp className="w-5 h-5 text-slate-300" />
+          ) : (
+            <ChevronDown className="w-5 h-5 text-slate-300" />
+          )}
         </div>
       </div>
       <div
-        className={`overflow-hidden border
-        ${
-          resolvedCodeTheme === "dark"
-            ? "bg-gray-900 border-gray-800"
-            : "bg-gray-50 border-gray-300"
-        }
-      `}
+        className={`overflow-hidden transition-all duration-300 ${
+          isExpanded
+            ? "max-h-[calc(100dvh-150px)]  opacity-100"
+            : "max-h-0 opacity-0"
+        }`}
       >
         <div
-          className={`
-          px-4 py-2 text-xs font-semibold border-b
+          className={`overflow-hidden border
           ${
             resolvedCodeTheme === "dark"
-              ? " bg-neutral-700/50 border-gray-700 text-gray-400"
-              : "bg-gray-200 border-gray-300 text-gray-600"
+              ? "bg-gray-900 border-gray-800"
+              : "bg-gray-50 border-gray-300"
           }
         `}
         >
-          EJS
-        </div>
-        <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className={`
-            w-full h-[calc(100vh-610px)] p-4 font-mono text-sm resize-none focus:outline-none
+          <div
+            className={`
+            px-4 py-2 text-xs font-semibold border-b
             ${
               resolvedCodeTheme === "dark"
-                ? "text-gray-100 bg-gray-900"
-                : "text-gray-900 bg-gray-50"
+                ? "bg-neutral-700/50 border-gray-700 text-gray-400"
+                : "bg-gray-200 border-gray-300 text-gray-600"
             }
           `}
-          placeholder="Enter body template with includes..."
-        />
+          >
+            EJS
+          </div>
+          <div
+            className={`
+              w-full h-[calc(100dvh-200px)] overflow-auto font-mono text-sm focus-within:outline-none code-theme-${resolvedCodeTheme}
+              ${
+                resolvedCodeTheme === "dark"
+                  ? "text-gray-100 bg-gray-900"
+                  : "text-gray-900 bg-gray-50"
+              }
+            `}
+          >
+            <Editor
+              textareaId="body-editor"
+              value={value}
+              onValueChange={onChange}
+              highlight={(code) =>
+                Prism.highlight(code, Prism.languages.markup, "markup")
+              }
+              padding={16}
+              style={{
+                fontFamily:
+                  'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                fontSize: 14,
+                minHeight: "100%",
+              }}
+              textareaClassName="focus:outline-none"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
