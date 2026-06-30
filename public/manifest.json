@@ -1,19 +1,22 @@
 {
-  "name": "My App",
-  "short_name": "App",
-  "theme_color": "#ffffff",
+  "name": "EJS Email Template Viewer",
+  "short_name": "EJS Viewer",
+  "description": "Free online EJS template viewer, editor, and real-time renderer. Edit EJS templates with custom JSON mock data in real-time.",
+  "theme_color": "#2563eb",
   "background_color": "#ffffff",
   "display": "standalone",
+  "start_url": "/",
   "icons": [
     {
-      "src": "/pwa-192x192.png",
-      "sizes": "192x192",
+      "src": "/favicon.png",
+      "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/pwa-512x512.png",
+      "src": "/logo.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ]
 }
+
