@@ -36,7 +36,7 @@ export function Header({
   }, [isMenuOpen]);
 
   return (
-    <header className="sticky top-0 z-20 backdrop-blur-md bg-white/70 dark:bg-slate-900/70 border-b border-slate-200/80 dark:border-slate-800/80 px-4 py-3.5 mb-6">
+    <header className="sticky top-0 z-20 backdrop-blur-md bg-white/70 dark:bg-slate-900/70 border-b border-slate-200/80 dark:border-slate-800/80 px-4 py-3.5">
       <div className="container mx-auto flex items-center justify-between">
         {/* Left Section: Brand Logo & Title */}
         <div className="flex items-center gap-3">

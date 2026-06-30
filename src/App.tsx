@@ -275,7 +275,7 @@ function App() {
           onAddFooter={handleAddFooter}
           onClearAll={handleClearAllData}
         />
-        <div className="container mx-auto px-4 pb-8">
+        <div className="container mx-auto px-4 pt-1 pb-8">
           <div className="grid lg:grid-cols-2 gap-6">
             <TemplateEditor
               headerTemplate={headerTemplate}
