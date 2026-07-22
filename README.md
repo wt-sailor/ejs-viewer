@@ -61,10 +61,11 @@ A modern web application for creating, previewing, and testing EJS email templat
 
    **Backend (server/.env)**
    ```env
-   MAILTRAP_HOST=sandbox.smtp.mailtrap.io
-   MAILTRAP_PORT=2525
-   MAILTRAP_USER=your-mailtrap-user
-   MAILTRAP_PASS=your-mailtrap-password
+   SMTP_HOST=sandbox.smtp.mailtrap.io
+   SMTP_PORT=2525
+   SMTP_USER=your-mailtrap-user
+   SMTP_PASS=your-mailtrap-password
+   SMTP_EMAIL_FROM=sender-mail
    PORT=3001
    ```
 

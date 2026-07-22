@@ -130,7 +130,11 @@ app.post("/api/send-email", async (req: Request, res: Response) => {
         });
     }
 
-    const result = await sendEmail(html, recipientEmail, "noreply@yourdomain.com");
+    const result = await sendEmail(
+      html,
+      recipientEmail,
+      process.env.SMTP_EMAIL_FROM || "ejsviewer@mail.sailorlabs.in"
+    );
     res.json({ success: true, messageId: result.messageId });
   } catch (error) {
     console.error("Error sending email:", error);

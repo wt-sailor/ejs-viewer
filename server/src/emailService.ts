@@ -1,12 +1,12 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.gmail.com",
-  port: parseInt(process.env.SMTP_PORT || "587"),
-  secure: parseInt(process.env.SMTP_PORT || "587") === 465,
+  host: process.env.SMTP_HOST || "smtp.resend.com",
+  port: parseInt(process.env.SMTP_PORT || "465"),
+  secure: parseInt(process.env.SMTP_PORT || "465") === 465,
   auth: {
-    user: process.env.MAILTRAP_USER || "sailorumang1@gmail.com",
-    pass: process.env.MAILTRAP_PASS || "ijaz tnni dxnl rehk",
+    user: process.env.SMTP_USER || "resend",
+    pass: process.env.SMTP_PASS,
   },
 });
 
@@ -17,7 +17,7 @@ export async function sendEmail(
 ) {
   try {
     const mailOptions = {
-      from: senderEmail,
+      from: process.env.SMTP_EMAIL_FROM || senderEmail,
       to: recipientEmail,
       subject: "Email from EJS Template",
       html: html,
